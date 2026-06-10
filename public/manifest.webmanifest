@@ -1,0 +1,17 @@
+{
+  "name": "Turnos · Fonoaudiología",
+  "short_name": "Turnos",
+  "lang": "es",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#F3EDDF",
+  "theme_color": "#F3EDDF",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

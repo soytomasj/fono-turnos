@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-linen font-sans text-ink antialiased;
+    background-image:
+      radial-gradient(1000px 480px at 90% -120px, rgba(45, 99, 96, 0.08), transparent 60%),
+      radial-gradient(820px 420px at -140px 35%, rgba(191, 91, 54, 0.06), transparent 55%);
+    background-attachment: fixed;
+  }
+  /* grano de papel sobre toda la interfaz */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+    letter-spacing: -0.01em;
+  }
+  button {
+    @apply select-none;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-line bg-paper shadow-card;
+  }
+  .label {
+    @apply text-[11px] font-bold uppercase tracking-[0.14em] text-muted;
+  }
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  /* línea punteada estilo libro contable, entre concepto y monto */
+  .leader {
+    @apply mx-2 flex-1 -translate-y-1 border-b border-dotted border-line;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[15px] text-ink outline-none transition placeholder:text-muted/50 focus:border-teal focus:ring-2 focus:ring-teal/15;
+  }
+  select.input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238C8674' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    padding-right: 2.4rem;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-bold transition active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40;
+  }
+  .btn-sm {
+    @apply gap-1 rounded-lg px-2.5 py-1.5 text-xs;
+  }
+  .btn-primary {
+    @apply bg-teal text-paper shadow-soft hover:bg-teal-deep;
+  }
+  .btn-soft {
+    @apply bg-teal-tint text-teal-deep hover:bg-teal-tint/70;
+  }
+  .btn-clay {
+    @apply bg-clay text-paper shadow-soft hover:bg-clay-deep;
+  }
+  .btn-ghost {
+    @apply border border-line bg-paper text-ink hover:bg-linen/70;
+  }
+  .btn-icon {
+    @apply inline-flex h-9 w-9 items-center justify-center rounded-full border border-line bg-paper text-ink transition hover:border-teal/40 active:scale-95;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-[3px] text-[11px] font-bold leading-none;
+  }
+}
