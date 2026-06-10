@@ -1,12 +1,75 @@
 import { useState } from 'react'
 import useStore from '../store/useStore.js'
 import { valorDe } from '../lib/turnos.js'
+import { conectar, desconectar, useSyncEstado } from '../lib/sync.js'
 import { DIAS, gs } from '../lib/util.js'
 import MoneyInput from '../components/MoneyInput.jsx'
 import PacienteModal from '../components/PacienteModal.jsx'
 import { IconPlus, IconUsers } from '../components/icons.jsx'
 
 const TINTES = ['bg-teal-tint text-teal-deep', 'bg-clay-tint text-clay-deep', 'bg-ocre-tint text-ocre-deep']
+
+function SyncCard() {
+  const estado = useSyncEstado()
+  const [clave, setClave] = useState('')
+  const [error, setError] = useState(null)
+  const [conectando, setConectando] = useState(false)
+
+  const intentar = async () => {
+    if (!clave.trim() || conectando) return
+    setConectando(true)
+    setError(null)
+    const r = await conectar(clave)
+    setConectando(false)
+    if (!r.ok) setError(r.motivo === 'clave' ? 'Clave incorrecta.' : 'Sin conexión. Probá de nuevo.')
+    else setClave('')
+  }
+
+  if (estado === 'off') {
+    return (
+      <div className="card p-4 animate-rise">
+        <div className="label">Sincronización</div>
+        <p className="mt-1 text-xs text-muted">
+          Con la misma clave en cada dispositivo, ves los mismos datos en todos.
+        </p>
+        <div className="mt-2.5 flex gap-2">
+          <input
+            type="password"
+            className="input flex-1"
+            placeholder="Clave de sincronización"
+            value={clave}
+            onChange={(e) => setClave(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && intentar()}
+          />
+          <button className="btn btn-soft shrink-0" disabled={!clave.trim() || conectando} onClick={intentar}>
+            {conectando ? 'Conectando…' : 'Conectar'}
+          </button>
+        </div>
+        {error && <p className="mt-1.5 text-xs text-clay-deep">{error}</p>}
+      </div>
+    )
+  }
+
+  const textos = {
+    ok: ['Sincronizado', 'text-teal-deep'],
+    sync: ['Guardando…', 'text-muted'],
+    error: ['Sin conexión — se reintenta solo', 'text-ocre-deep'],
+    clave: ['Clave incorrecta — reconectá', 'text-clay-deep'],
+  }
+  const [texto, clase] = textos[estado] ?? textos.ok
+
+  return (
+    <div className="card flex items-center justify-between gap-3 p-4 animate-rise">
+      <div className="min-w-0">
+        <div className="label">Sincronización</div>
+        <p className={`mt-1 text-xs font-bold ${clase}`}>{texto}</p>
+      </div>
+      <button className="btn btn-ghost btn-sm shrink-0" onClick={desconectar}>
+        Desconectar
+      </button>
+    </div>
+  )
+}
 
 export default function Pacientes() {
   const pacientes = useStore((s) => s.pacientes)
@@ -98,6 +161,8 @@ export default function Pacientes() {
           })}
         </div>
       )}
+
+      <SyncCard />
 
       {editando !== null && (
         <PacienteModal paciente={editando === 'nuevo' ? null : editando} onClose={() => setEditando(null)} />
